@@ -242,7 +242,9 @@ namespace libtorrent
 #if defined TORRENT_VERBOSE_LOGGING || defined TORRENT_ERROR_LOGGING
 		error_code ec;
 		m_logger = m_ses.create_log(m_remote.address().to_string(ec) + "_"
-			+ to_string(m_remote.port()).elems, m_ses.listen_port());
+			+ to_string(m_remote.port()).elems + "_"
+			+ to_string(m_socket->local_endpoint(ec).port()).elems
+			, m_ses.listen_port());
 		peer_log("%s [ ep: %s type: %s seed: %d p: %p local: %s]"
 			, m_outgoing ? ">>> OUTGOING_CONNECTION" : "<<< INCOMING CONNECTION"
 			, print_endpoint(m_remote).c_str()
@@ -391,8 +393,10 @@ namespace libtorrent
 #if defined TORRENT_VERBOSE_LOGGING || defined TORRENT_ERROR_LOGGING
 		error_code ec;
 		TORRENT_ASSERT(m_socket->remote_endpoint(ec) == m_remote || ec);
-		m_logger = m_ses.create_log(remote().address().to_string(ec) + "_"
-			+ to_string(remote().port()).elems, m_ses.listen_port());
+		m_logger = m_ses.create_log(m_remote.address().to_string(ec) + "_"
+			+ to_string(m_remote.port()).elems + "_"
+			+ to_string(m_socket->local_endpoint(ec).port()).elems
+			, m_ses.listen_port());
 		peer_log("%s [ ep: %s type: %s local: %s]"
 			, m_outgoing ? ">>> OUTGOING_CONNECTION" : "<<< INCOMING CONNECTION"
 			, print_endpoint(m_remote).c_str()
